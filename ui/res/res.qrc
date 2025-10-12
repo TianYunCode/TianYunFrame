@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imageswitch/btncheckoff1.png</file>
+        <file>imageswitch/btncheckoff2.png</file>
+        <file>imageswitch/btncheckoff3.png</file>
+        <file>imageswitch/btncheckon1.png</file>
+        <file>imageswitch/btncheckon2.png</file>
+        <file>imageswitch/btncheckon3.png</file>
+        <file>loading/icon-loading.gif</file>
+        <file>loading/loading1.png</file>
+        <file>loading/loading2.png</file>
+        <file>loading/loading3.png</file>
+        <file>loading/loading4.png</file>
+        <file>loading/loading5.png</file>
+        <file>loading/loading6.png</file>
+        <file>loading/loading7.png</file>
+        <file>loading/loading8.png</file>
+        <file>login/cai.png</file>
+        <file>login/check.png</file>
+        <file>login/close.png</file>
+        <file>login/close-hover.png</file>
+        <file>login/dunkai.png</file>
+        <file>login/uncheck.png</file>
+        <file>imageswitch/switch_close.png</file>
+        <file>imageswitch/switch_open.png</file>
+        <file>lineedit/btn_editClear_nor.png</file>
+        <file>lineedit/icon_cursorHand.png</file>
+        <file>lineedit/icon_password.png</file>
+        <file>lineedit/icon_user.png</file>
+        <file>lineedit/btn_eye_hov.png</file>
+        <file>lineedit/btn_eye_nor.png</file>
+        <file>lineedit/btn_eye_pre.png</file>
+        <file>icon/refresh_icon.svg</file>
+    </qresource>
+</RCC>
