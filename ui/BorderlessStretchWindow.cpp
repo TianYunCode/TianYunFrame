@@ -1,4 +1,6 @@
 #include "BorderlessStretchWindow.h"
+#include "BorderlessStretchWindow.h"
+#include "BorderlessStretchWindow.h"
 
 BorderlessStretchWindow::BorderlessStretchWindow(QWidget* parent) :QWidget(parent)
 {
@@ -14,6 +16,11 @@ void BorderlessStretchWindow::maximizeIsMove(bool move)
 void BorderlessStretchWindow::maximizeIsResize(bool resize)
 {
 	maximizeResize = resize;
+}
+
+void BorderlessStretchWindow::setTitleBar(QWidget* titleBar)
+{
+	this->titleBar = titleBar;
 }
 
 //准备拖动
@@ -163,6 +170,19 @@ void BorderlessStretchWindow::mouseMoveEvent(QMouseEvent* event)
 	}
 
 	QWidget::mouseMoveEvent(event);
+}
+
+void BorderlessStretchWindow::mouseDoubleClickEvent(QMouseEvent* ev)
+{
+	// 如果双击的是标题栏，窗口最大化，其他不处理
+	if (titleBar && titleBar->geometry().contains(ev->pos()))
+	{
+		if (isMaximized())
+			showNormal();
+		else
+			showMaximized();
+	}
+	QWidget::mouseDoubleClickEvent(ev);
 }
 
 //鼠标离开窗口，取消高亮

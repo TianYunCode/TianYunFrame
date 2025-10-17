@@ -445,7 +445,8 @@ class DateBasedFileSink : public FileSink
 public:
     DateBasedFileSink(const std::string& baseName, int rolloverHour = 0) : FileSink(baseName), rolloverHour_(rolloverHour)
     {
-        lastRolloverTime_ = getStartOfDay();
+        // 初始化时立即滚动以创建正确的文件
+        rollover();
     }
 
 protected:
@@ -456,13 +457,9 @@ protected:
             return true;
         }
 
+        // 检查当前日期是否与文件创建时的日期不同
         auto now = std::chrono::system_clock::now();
-        if (now >= lastRolloverTime_ + std::chrono::hours(24))
-        {
-            return true;
-        }
-
-        return false;
+        return !isSameDay(currentFileTime_, now);
     }
 
     void rollover() override
@@ -472,31 +469,68 @@ protected:
             file_.close();
         }
 
+        // 获取当前时间作为新文件的创建时间
+        currentFileTime_ = std::chrono::system_clock::now();
+
         // 生成基于日期的文件名
-        auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        auto t = std::chrono::system_clock::to_time_t(currentFileTime_);
         auto tm = *std::localtime(&t);
 
         std::ostringstream oss;
         oss << baseName_ << "." << std::put_time(&tm, "%Y-%m-%d") << ".log";
 
-        file_.open(oss.str(), std::ios::out | std::ios::app);
-        lastRolloverTime_ = getStartOfDay() + std::chrono::hours(24);
+        std::string newFilename = oss.str();
+
+        // 只有当文件名变化时才重新打开
+        if (newFilename != currentFilename_)
+        {
+            file_.open(newFilename, std::ios::out | std::ios::app);
+            currentFilename_ = newFilename;
+
+            // 记录下一次滚动时间（明天的同一小时）
+            nextRolloverTime_ = getNextRolloverTime();
+        }
+        else
+        {
+            // 文件名没变，继续使用当前文件
+            file_.open(currentFilename_, std::ios::out | std::ios::app);
+        }
     }
 
 private:
-    std::chrono::system_clock::time_point getStartOfDay()
+    bool isSameDay(const std::chrono::system_clock::time_point& t1,
+        const std::chrono::system_clock::time_point& t2)
+    {
+        auto time1 = std::chrono::system_clock::to_time_t(t1);
+        auto time2 = std::chrono::system_clock::to_time_t(t2);
+
+        auto tm1 = *std::localtime(&time1);
+        auto tm2 = *std::localtime(&time2);
+
+        return tm1.tm_year == tm2.tm_year &&
+            tm1.tm_mon == tm2.tm_mon &&
+            tm1.tm_mday == tm2.tm_mday;
+    }
+
+    std::chrono::system_clock::time_point getNextRolloverTime()
     {
         auto now = std::chrono::system_clock::now();
         auto t = std::chrono::system_clock::to_time_t(now);
         auto tm = *std::localtime(&t);
+
+        // 设置为明天的滚动小时
+        tm.tm_mday += 1;
         tm.tm_hour = rolloverHour_;
         tm.tm_min = 0;
         tm.tm_sec = 0;
+
         return std::chrono::system_clock::from_time_t(std::mktime(&tm));
     }
 
     int rolloverHour_;
-    std::chrono::system_clock::time_point lastRolloverTime_;
+    std::chrono::system_clock::time_point currentFileTime_;
+    std::chrono::system_clock::time_point nextRolloverTime_;
+    std::string currentFilename_;
 };
 
 // 异步日志器

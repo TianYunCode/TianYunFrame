@@ -16,10 +16,13 @@ public:
 
 	void maximizeIsResize(bool resize); // 最大化时是否允许拉伸
 
+    void setTitleBar(QWidget* titleBar);   // 用来双击最大化窗口
+
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event)override;
     void mouseMoveEvent(QMouseEvent* event)override;
+    void mouseDoubleClickEvent(QMouseEvent* ev)override;
     void leaveEvent(QEvent* event)override;
 
 private:
@@ -51,4 +54,6 @@ private:
     QRect originalGeometry;  //拖动时窗口原始位置
 	bool maximizeMove = false; // 最大化时是否允许移动
 	bool maximizeResize = false; // 最大化时是否允许拉伸
+
+    QWidget* titleBar{nullptr};
 };
