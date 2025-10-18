@@ -86,3 +86,9 @@
 
 // 异常处理
 #define T_ExceptionHandlerDemo 0
+
+// rpc客户端
+#define T_RpcClientDemo 0
+
+// rpc服务端
+#define T_RpcServerDemo 0

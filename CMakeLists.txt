@@ -1,8 +1,11 @@
-# frame/CMakeLists.txt
+# TianYunFrame/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 
-# Frame模块项目
-project(frame LANGUAGES C CXX)
+#TianYunFrame模块项目
+project(TianYunFrame LANGUAGES C CXX)
+
+# 添加rpc子模块
+add_subdirectory(rpc)
 
 # 设置C++标准
 set(CMAKE_CXX_STANDARD 17)
@@ -25,8 +28,11 @@ endif()
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network)
 
 # 设置包含目录
-set(FRAME_INCLUDE_DIRS
+set(TianYunFrame_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/rpc/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/rpc/thirdparty/asio
+    ${CMAKE_CURRENT_SOURCE_DIR}/rpc/thirdparty
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/demo
     ${CMAKE_CURRENT_SOURCE_DIR}/core
@@ -47,7 +53,7 @@ set(FRAME_INCLUDE_DIRS
 )
 
 # 头文件
-set(FRAME_HEADERS
+set(TianYunFrame_HEADERS
     config/ConfigManager.hpp
     config/cJSON/cJSON.h
 
@@ -78,6 +84,7 @@ set(FRAME_HEADERS
 
     logger/Logger.h
     logger/LoggerBase.h
+    logger/EasyLogger.h
 
     memory/MemoryPool.hpp
     memory/ObjectPool.hpp
@@ -117,7 +124,7 @@ set(FRAME_HEADERS
 )
 
 # 源文件
-set(FRAME_SOURCES
+set(TianYunFrame_SOURCES
     config/cJSON/cJSON.c
     
     demo/T_AnimatedCheckBoxDemo.cpp
@@ -154,6 +161,8 @@ set(FRAME_SOURCES
     core/MD5.cpp
     core/Utility.cpp
 
+    logger/EasyLogger.cpp
+
     help/QtHelp.cpp
     help/StaticTool.cpp
 
@@ -181,25 +190,25 @@ set(FRAME_SOURCES
 )
 
 # 资源文件
-set(FRAME_RESOURCES
+set(TianYunFrame_RESOURCES
     ui/res/res.qrc
 )
 
-# 创建Frame静态库
-add_library(frame STATIC
-    ${FRAME_HEADERS}
-    ${FRAME_SOURCES}
-    ${FRAME_RESOURCES}
+# 创建TianYunFrame静态库
+add_library(TianYunFrame STATIC
+    ${TianYunFrame_HEADERS}
+    ${TianYunFrame_SOURCES}
+    ${TianYunFrame_RESOURCES}
 )
 
 # 设置包含目录
-target_include_directories(frame PUBLIC 
+target_include_directories(TianYunFrame PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${FRAME_INCLUDE_DIRS}
+    ${TianYunFrame_INCLUDE_DIRS}
 )
 
 # 链接Qt库
-target_link_libraries(frame PUBLIC 
+target_link_libraries(TianYunFrame PUBLIC 
     Qt6::Core
     Qt6::Widgets
     Qt6::Network
@@ -208,23 +217,23 @@ target_link_libraries(frame PUBLIC
 ########################################################################################
 # 异常处理库路径
 if(WIN32)
-    target_link_libraries(frame PUBLIC DbgHelp.lib)
+    target_link_libraries(TianYunFrame PUBLIC DbgHelp.lib)
 endif()
 ########################################################################################
 
 ########################################################################################
 # SDL2库路径
 set(SDL2_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third/SDL2")
-target_include_directories(frame PUBLIC "${SDL2_DIR}/SDL2/include")
+target_include_directories(TianYunFrame PUBLIC "${SDL2_DIR}/SDL2/include")
 
 # 链接SDL2库
 if(WIN32)
-    target_link_libraries(frame PUBLIC 
+    target_link_libraries(TianYunFrame PUBLIC 
         "${SDL2_DIR}/SDL2/lib/x64/SDL2.lib"
         "${SDL2_DIR}/SDL2/lib/x64/SDL2main.lib"
     )
 else()
-    target_link_libraries(frame PUBLIC 
+    target_link_libraries(TianYunFrame PUBLIC 
         "${SDL2_DIR}/SDL2/lib/libSDL2.so"
     )
 endif()
@@ -234,15 +243,15 @@ endif()
 
 # FFmpeg库路径(8.0版本)
 set(FFMPEG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third/ffmpeg-8.0-win64-dev")
-target_include_directories(frame PUBLIC "${FFMPEG_DIR}/include")
+target_include_directories(TianYunFrame PUBLIC "${FFMPEG_DIR}/include")
 
 # FFmpeg库路径(4.2.1版本)
 # set(FFMPEG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third/ffmpeg-4.2.1-win32-dev")
-# target_include_directories(frame PUBLIC "${FFMPEG_DIR}/include")
+# target_include_directories(TianYunFrame PUBLIC "${FFMPEG_DIR}/include")
 
 # 链接FFmpeg库
 if(WIN32)
-    target_link_libraries(frame PUBLIC 
+    target_link_libraries(TianYunFrame PUBLIC 
         "${FFMPEG_DIR}/lib/avcodec.lib"
         "${FFMPEG_DIR}/lib/avformat.lib"
         "${FFMPEG_DIR}/lib/avutil.lib"
@@ -253,7 +262,7 @@ if(WIN32)
         opengl32
     )
 else()
-    target_link_libraries(frame PUBLIC 
+    target_link_libraries(TianYunFrame PUBLIC 
         "${FFMPEG_DIR}/lib/libavcodec.so"
         "${FFMPEG_DIR}/lib/libavformat.so"
         "${FFMPEG_DIR}/lib/libavutil.so"
@@ -268,7 +277,7 @@ endif()
 ########################################################################################
 
 # 设置输出目录
-set_target_properties(frame PROPERTIES
+set_target_properties(TianYunFrame PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
