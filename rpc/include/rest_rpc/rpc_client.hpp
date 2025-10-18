@@ -207,27 +207,30 @@ private:
     co_return co_await wait_response<R>();
   }
 
-  template <typename R> asio::awaitable<call_result<R>> wait_response() {
+  template <typename R> asio::awaitable<call_result<R>> wait_response() 
+  {
     call_result<R> result{};
     std::error_code ec;
     size_t size;
     rest_rpc_header resp_header;
-    std::tie(ec, size) = co_await asio::async_read(
-        socket_->impl_, asio::buffer(&resp_header, sizeof(rest_rpc_header)),
-        asio::as_tuple(asio::use_awaitable));
-    if (ec) {
+    std::tie(ec, size) = co_await asio::async_read(socket_->impl_, asio::buffer(&resp_header, sizeof(rest_rpc_header)), asio::as_tuple(asio::use_awaitable));
+    if (ec) 
+    {
       result.ec = rpc_errc::read_error;
       close_socket(*socket_);
       comple_all();
       co_return result;
     }
-    if (resp_header.magic != 39) {
+
+    if (resp_header.magic != 39) 
+    {
       result.ec = rpc_errc::protocol_error;
       comple_all();
       co_return result;
     }
 
-    if (cross_ending_) {
+    if (cross_ending_) 
+    {
       parse_recieved(resp_header);
     }
 
