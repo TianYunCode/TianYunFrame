@@ -276,6 +276,20 @@ endif()
 
 ########################################################################################
 
+########################################################################################
+# VLC库
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include")
+link_directories("${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib")
+
+# 拷贝libvlc/bin目录下所有dll文件到输出目录
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/bin"
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMENT "Copying libvlc DLL files..."
+)
+########################################################################################
+
 # 设置输出目录
 set_target_properties(TianYunFrame PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
