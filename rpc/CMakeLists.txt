@@ -3,7 +3,7 @@ project(rpc)
 
 include_directories(include)
 
-#ϵͳ���߳̿⡣
+#系统的线程库。
 find_package(Threads REQUIRED)
 
 include(cmake/build.cmake)

@@ -41,6 +41,8 @@ extern "C" {
 
 typedef struct libvlc_media_t libvlc_media_t;
 
+typedef long long ssize_t;
+
 /** Meta data types */
 typedef enum libvlc_meta_t {
     libvlc_meta_Title,

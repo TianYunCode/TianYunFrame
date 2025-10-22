@@ -1,7 +1,7 @@
 #pragma once
 
 #include "LoggerBase.h"
-#include "Singleton.h"
+#include "Singleton.hpp"
 
 namespace logger
 {

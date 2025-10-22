@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <cctype>
 #include <mutex>
-#include "Singleton.h"
+#include "Singleton.hpp"
 
 /**
  * @brief 配置管理器类，继承自单例模板，确保全局唯一实例

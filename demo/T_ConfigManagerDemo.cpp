@@ -61,7 +61,7 @@ int main()
 
     // 1. 加载配置文件
     qDebug() << "1. 加载配置文件...";
-    if (config->loadConfig("demo_config->ini"))
+    if (config->loadConfig("demo_config.ini"))
     {
         qDebug() << "  配置文件加载成功";
     }

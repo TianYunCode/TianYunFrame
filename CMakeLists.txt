@@ -50,6 +50,7 @@ set(TianYunFrame_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/utils
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/JsonStructConvert
     ${CMAKE_CURRENT_SOURCE_DIR}/ImGUI
+    ${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include
 )
 
 # 头文件
@@ -280,6 +281,12 @@ endif()
 # VLC库
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include")
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib")
+
+target_include_directories(TianYunFrame PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include")
+    target_link_libraries(TianYunFrame PUBLIC 
+        "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib/libvlc.lib"
+        "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib/libvlccore.lib"
+    )
 
 # 拷贝libvlc/bin目录下所有dll文件到输出目录
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

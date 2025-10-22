@@ -5,7 +5,7 @@
 #include <rest_rpc.hpp>
 using namespace rest_rpc;
 
-// ĞèÒªÉùÃ÷
+// ÃÃ¨Ã’ÂªÃ‰Ã¹ÃƒÃ·
 std::string_view echo(std::string_view str);
 int add(int a, int b);
 
