@@ -49,8 +49,6 @@ set(TianYunFrame_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/ui/common
     ${CMAKE_CURRENT_SOURCE_DIR}/utils
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/JsonStructConvert
-    ${CMAKE_CURRENT_SOURCE_DIR}/ImGUI
-    ${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include
 )
 
 # 头文件
@@ -66,6 +64,8 @@ set(TianYunFrame_HEADERS
     core/UniversalRedirector.h
     core/ExceptionHandler.h
     core/Utility.h
+    core/GenericSmartPointer.h
+    core/RingBufferManager.h
 
     csv/CSVHandler.h
 
@@ -113,15 +113,6 @@ set(TianYunFrame_HEADERS
 
     ui/common/EventFilterObject.h
     ui/common/FlatUI.h
-
-    ImGUI/imconfig.h
-    ImGUI/imgui.h
-    ImGUI/imgui_impl_sdl2.h
-    ImGUI/imgui_impl_sdlrenderer2.h
-    ImGUI/imgui_internal.h
-    ImGUI/imstb_rectpack.h
-    ImGUI/imstb_textedit.h
-    ImGUI/imstb_truetype.h
 )
 
 # 源文件
@@ -152,7 +143,6 @@ set(TianYunFrame_SOURCES
     demo/T_RandomDemo.cpp
     demo/T_FileSystemDemo.cpp
     demo/T_CJSONDemo.cpp
-    demo/T_ImGUIDemo.cpp
     demo/T_RefreshButtonDemo.cpp
     demo/T_MD5Demo.cpp
     demo/T_UniversalRedirectorDemo.cpp
@@ -180,14 +170,6 @@ set(TianYunFrame_SOURCES
 
     ui/common/EventFilterObject.cpp
     ui/common/FlatUI.cpp
-
-    ImGUI/imgui.cpp
-    ImGUI/imgui_demo.cpp
-    ImGUI/imgui_draw.cpp
-    ImGUI/imgui_impl_sdl2.cpp
-    ImGUI/imgui_impl_sdlrenderer2.cpp
-    ImGUI/imgui_tables.cpp
-    ImGUI/imgui_widgets.cpp
 )
 
 # 资源文件
@@ -220,81 +202,6 @@ target_link_libraries(TianYunFrame PUBLIC
 if(WIN32)
     target_link_libraries(TianYunFrame PUBLIC DbgHelp.lib)
 endif()
-########################################################################################
-
-########################################################################################
-# SDL2库路径
-set(SDL2_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third/SDL2")
-target_include_directories(TianYunFrame PUBLIC "${SDL2_DIR}/SDL2/include")
-
-# 链接SDL2库
-if(WIN32)
-    target_link_libraries(TianYunFrame PUBLIC 
-        "${SDL2_DIR}/SDL2/lib/x64/SDL2.lib"
-        "${SDL2_DIR}/SDL2/lib/x64/SDL2main.lib"
-    )
-else()
-    target_link_libraries(TianYunFrame PUBLIC 
-        "${SDL2_DIR}/SDL2/lib/libSDL2.so"
-    )
-endif()
-########################################################################################
-
-########################################################################################
-
-# FFmpeg库路径(8.0版本)
-set(FFMPEG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third/ffmpeg-8.0-win64-dev")
-target_include_directories(TianYunFrame PUBLIC "${FFMPEG_DIR}/include")
-
-# FFmpeg库路径(4.2.1版本)
-# set(FFMPEG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third/ffmpeg-4.2.1-win32-dev")
-# target_include_directories(TianYunFrame PUBLIC "${FFMPEG_DIR}/include")
-
-# 链接FFmpeg库
-if(WIN32)
-    target_link_libraries(TianYunFrame PUBLIC 
-        "${FFMPEG_DIR}/lib/avcodec.lib"
-        "${FFMPEG_DIR}/lib/avformat.lib"
-        "${FFMPEG_DIR}/lib/avutil.lib"
-        "${FFMPEG_DIR}/lib/swscale.lib"
-        "${FFMPEG_DIR}/lib/swresample.lib"
-        "${FFMPEG_DIR}/lib/avfilter.lib"
-        "${FFMPEG_DIR}/lib/avdevice.lib"
-        opengl32
-    )
-else()
-    target_link_libraries(TianYunFrame PUBLIC 
-        "${FFMPEG_DIR}/lib/libavcodec.so"
-        "${FFMPEG_DIR}/lib/libavformat.so"
-        "${FFMPEG_DIR}/lib/libavutil.so"
-        "${FFMPEG_DIR}/lib/libswscale.so"
-        "${FFMPEG_DIR}/lib/libswresample.so"
-        "${FFMPEG_DIR}/lib/libavfilter.so"
-        "${FFMPEG_DIR}/lib/libavdevice.so"
-        GL
-    )
-endif()
-
-########################################################################################
-
-########################################################################################
-# VLC库
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include")
-link_directories("${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib")
-
-target_include_directories(TianYunFrame PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/include")
-    target_link_libraries(TianYunFrame PUBLIC 
-        "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib/libvlc.lib"
-        "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/lib/libvlccore.lib"
-    )
-
-# 拷贝libvlc/bin目录下所有dll文件到输出目录
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_CURRENT_SOURCE_DIR}/third/libvlc/bin"
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMENT "Copying libvlc DLL files..."
-)
 ########################################################################################
 
 # 设置输出目录
